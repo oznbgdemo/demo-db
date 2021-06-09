@@ -10,6 +10,15 @@ pipeline {
                     ls -lah
                 '''
             }
+        stage('Test') {
+            steps {
+                sh 'echo "Hello World TEST"'
+                sh 'echo "MAJOR.MINOR.BUILD: " $MAJOR_VERSION"."$MINOR_VERSION"."$BUILD_NUMBER '
+                sh '''
+                    echo "Multiline shell steps works too"
+                    ls -lah
+                '''
+            }
         }
     }
 }
