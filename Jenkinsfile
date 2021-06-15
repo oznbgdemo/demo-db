@@ -1,5 +1,7 @@
 pipeline {
     agent any
+    //VELOCITY_APP_NAME must match your Velocity pipeline application name
+    def VELOCITY_APP_NAME="NBG"
 
     stages {
         stage('Build') {
@@ -16,6 +18,15 @@ pipeline {
             steps {
                 echo 'Testing..'
             }
+        }
+        stage('Send Metrics') {
+           echo "Building ${VELOCITY_APP_NAME} (Build:${currentBuild.displayName}, GIT_COMMIT:${GIT_COMMIT})" 
+            step($class: 'UploadBuild',
+                tenantId: "5ade13625558f2c6688d15ce",
+                revision: "${GIT_COMMIT}",
+                appName: "${VELOCITY_APP_NAME}",
+                versionName:"${currentBuild.displayName}",
+                requestor: "admin", id: "${currentBuild.displayName}")
         }
         stage('Deploy') {
             steps {
