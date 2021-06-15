@@ -4,7 +4,6 @@ node {
     def GIT_COMMIT
 
     stage('Build') {
-        steps {
             sh 'echo "Hello World"'
             sh 'echo "MAJOR.MINOR.BUILD: " $MAJOR_VERSION"."$MINOR_VERSION"."$BUILD_NUMBER '
             sh '''
@@ -13,12 +12,9 @@ node {
             '''
             GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             echo "GIT_COMMIT=${GIT_COMMIT}"
-        }
     }
     stage('Test') {
-        steps {
             echo 'Testing..'
-        }
     }
     stage('Send Metrics') {
         echo "Building ${VELOCITY_APP_NAME} (Build:${currentBuild.displayName}, GIT_COMMIT:${GIT_COMMIT})" 
@@ -30,8 +26,6 @@ node {
             requestor: "admin", id: "${currentBuild.displayName}")
     }
     stage('Deploy') {
-        steps {
             echo 'Deploying....'
-        }
     }
 }
