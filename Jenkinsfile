@@ -1,7 +1,7 @@
-pipeline {
-    agent any
+node {
     //VELOCITY_APP_NAME must match your Velocity pipeline application name
     def VELOCITY_APP_NAME="NBG"
+    def GIT_COMMIT
 
     stages {
         stage('Build') {
@@ -12,6 +12,8 @@ pipeline {
                     echo "Multiline shell steps works too"
                     ls -lah
                 '''
+                GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
+                echo "GIT_COMMIT=${GIT_COMMIT}"
             }
         }
         stage('Test') {
