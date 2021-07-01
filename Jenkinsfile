@@ -33,31 +33,31 @@ node {
     }
         
     stage ('Send metrics to UCV') {
-         echo "Building ${VELOCITY_APP_NAME} (Build:${currentBuild.displayName}, GIT_COMMIT:${GIT_COMMIT})"
-         step($class: 'UploadBuild',
-             tenantId: "5ade13625558f2c6688d15ce",
-             revision: "${GIT_COMMIT}",
-             appName: "${VELOCITY_APP_NAME}",
-	      appId: "${VELOCITY_APP_ID}",
-             versionName:"${currentBuild.displayName}",
-	     status:"success",
-	     debug:"true",
-             requestor: "admin", id: "${currentBuild.displayName}")
+        echo "Building ${VELOCITY_APP_NAME} (Build:${currentBuild.displayName}, GIT_COMMIT:${GIT_COMMIT})"
+        step($class: 'UploadBuild',
+            tenantId: "5ade13625558f2c6688d15ce",
+            revision: "${GIT_COMMIT}",
+            appName: "${VELOCITY_APP_NAME}",
+	        appId: "${VELOCITY_APP_ID}",
+            versionName:"${currentBuild.displayName}",
+	        status:"success",
+	        debug:"true",
+            requestor: "admin", id: "${currentBuild.displayName}")
     }
 
-   stage ("Deploy to DEV") {
-    sleep 10
-    step([$class: 'UploadDeployment',
-          tenantId: "5ade13625558f2c6688d15ce",
-          versionName: "${currentBuild.displayName}",
-          versionExtId: "${currentBuild.displayName}",
-          type: 'Jenkins',
-          environmentId: "${VELOCITY_ENV_ID_DEV}",
-          environmentName: 'DEV',
-          appName: "${VELOCITY_APP_NAME}",
-          description: '[Description ex: Terraform Deployment]',
-          initiator: "admin",
-		  result: 'true'
+    stage ("Deploy to DEV") {
+        sleep 10
+        step([$class: 'UploadDeployment',
+            tenantId: "5ade13625558f2c6688d15ce",
+            versionName: "${currentBuild.displayName}",
+            versionExtId: "${currentBuild.displayName}",
+            type: 'Jenkins',
+            environmentId: "${VELOCITY_ENV_ID_DEV}",
+            environmentName: 'DEV',
+            appName: "${VELOCITY_APP_NAME}",
+            description: '[Description ex: Terraform Deployment]',
+            initiator: "admin",
+            result: 'true'
       ])
    }
 }
