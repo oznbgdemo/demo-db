@@ -31,9 +31,7 @@ node {
             )
     }
     stage('Build2') {
-	    steps {
-		    sh 'do something in Build2'
-	    }
+	    sh 'do something in Build2'
 	    post {
                 success {
                     publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"SUCCESS"
