@@ -45,5 +45,19 @@ node {
              requestor: "admin", id: "${currentBuild.displayName}")
     }
 
-
+   stage ("Deploy to DEV") {
+    sleep 10
+    step([$class: 'UploadDeployment',
+          tenantId: "5ade13625558f2c6688d15ce",
+          versionName: "${currentBuild.displayName}",
+          versionExtId: "${currentBuild.displayName}",
+          type: 'Jenkins',
+          environmentId: "${VELOCITY_ENV_ID_DEV}",
+          environmentName: 'DEV',
+          appName: "${VELOCITY_APP_NAME}",
+          description: '[Description ex: Terraform Deployment]',
+          initiator: "admin",
+		  result: 'true'
+      ])
+   }
 }
