@@ -1,88 +1,47 @@
-#!groovy
-/*
-    This is an sample Jenkins file for the Weather App, which is a node.js application that has unit test, code coverage
-    and functional verification tests, deploy to staging and production environment and use IBM Cloud DevOps gate.
-    We use this as an example to use our plugin in the Jenkinsfile
-    Basically, you need to specify required 4 environment variables and then you will be able to use the 4 different methods
-    for the build/test/deploy stage and the gate
- */
-pipeline {
-    agent any
-    stages {
-        stage('Build') {
-            environment {
-                // get git commit from Jenkins
-                GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-                GIT_BRANCH = 'main'
-                GIT_REPO = 'https://github.com/oznbgdemo/demo-db'
-            }
-            steps {
-               // checkout scm
-                sh 'uname -a'
-                sh 'echo "in BUILD"'
-            }
-            // post build section to use "publishBuildRecord" method to publish build record
-            post {
-                success {
-                    publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"SUCCESS"
-                }
-                failure {
-                    publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"FAIL"
-                }
-            }
-        }
-        stage('Deploy to Staging') {
-            steps {
-                // Push the Weather App to Bluemix, staging space
-                sh '''
-                        echo "Deploy to staging..."
-			echo "do something"
-                    '''
-            }
-            // post build section to use "publishDeployRecord" method to publish deploy record and notify OTC of stage status
-            post {
-                success {
-                    publishDeployRecord environment: "DEV", appUrl: "http://asdf.com", result:"SUCCESS"
-                    // use "notifyOTC" method to notify otc of stage status
-                    notifyOTC stageName: "Deploy to Staging", status: "SUCCESS"
-                    sendDeployableMessage status: "SUCCESS"
-                }
-                failure {
-                    publishDeployRecord environment: "STAGING", appUrl: "http://asdf.com", result:"FAIL"
-                    // use "notifyOTC" method to notify otc of stage status
-                    notifyOTC stageName: "Deploy to Staging", status: "FAILURE"
-                }
-            }
-        }
-
-        stage('Gate') {
-            steps {
-                // use "evaluateGate" method to leverage IBM Cloud DevOps gate
-                evaluateGate policy: 'Weather App Policy', forceDecision: 'true'
-            }
-        }
-        stage('Deploy to Prod') {
-            steps {
-                // Push the Weather App to Bluemix, production space
-                sh '''
-                        echo "deploy to prod..."
-
-                    '''
-            }
-            // post build section to use "publishDeployRecord" method to publish deploy record and notify OTC of stage status
-            post {
-                success {
-                    publishDeployRecord environment: "PROD", appUrl: "http://asdf.com", result:"SUCCESS"
-                    // use "notifyOTC" method to notify otc of stage status
-                    notifyOTC stageName: "Deploy to Prod", status: "SUCCESS"
-                    sendDeployableMessage status: "SUCCESS"
-                }
-                failure {
-                    publishDeployRecord environment: "PROD", appUrl: "http://asdf.com", result:"FAIL"
-                    // use "notifyOTC" method to notify otc of stage status
-                    notifyOTC stageName: "Deploy to Prod", status: "FAILURE"
-                }
-            }
-        }
+node {
+    //URL to Github repository https://github.com/<owner>/<repo>
+    def GITHUB_REPO_URL="https://github.com/oznbgdemo/demo-db"
+    //CredentialId for the GitHub repository
+    def CREDENTIALS_ID = "osmanburucu-ibm"
+    //Retrieve ENV ID values for DEV and QA from "Download attributes from API" json file
+    def VELOCITY_ENV_ID_INPUT="64fa7beb-4deb-4177-84a0-c018a32bff8e"
+    def VELOCITY_ENV_ID_DEV="def86393-cbbf-40b2-a97a-fb08c7cf64b5"
+    def VELOCITY_ENV_ID_QA="97002b7a-9de3-4c05-a233-a13669e16438"
+    def VELOCITY_ENV_ID_PROD="e4a162e6-badb-4cf3-8600-268e388b653e"
+	
+    //VELOCITY_APP_NAME must match your Velocity pipeline application name
+    def VELOCITY_APP_NAME="GIT-DB"
+    //Version number 
+    def VERSION_NUMBER="${MAJOR_VERSION}.${MINOR_VERSION}"
+    //Do not change below this line.
+    def GIT_COMMIT
+    
+    stage ('cloning the repository'){
+        currentBuild.displayName = "${VERSION_NUMBER}.${BUILD_NUMBER}"
+        echo currentBuild.displayName = "${currentBuild.displayName}"
+        majorVersion="${BUILD_NUMBER}"
+        def scm = git branch: 'main', url: "${GITHUB_REPO_URL}",credentialsId: "${CREDENTIALS_ID}"
+        GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
+        echo "GIT_COMMIT=${GIT_COMMIT}"
     }
+    
+    stage ('build') {
+        sh '''echo $WORKSPACE
+	      echo 'building in stage build'
+              '''
+    }
+        
+    stage ('Send metrics to UCV') {
+         echo "Building ${VELOCITY_APP_NAME} (Build:${currentBuild.displayName}, GIT_COMMIT:${GIT_COMMIT})"
+         step($class: 'UploadBuild',
+             tenantId: "5ade13625558f2c6688d15ce",
+             revision: "${GIT_COMMIT}",
+             appName: "${VELOCITY_APP_NAME}",
+             versionName:"${currentBuild.displayName}",
+	     status:"success",
+	     debug:"true",
+             requestor: "admin", id: "${currentBuild.displayName}")
+    }
+
+
 }
