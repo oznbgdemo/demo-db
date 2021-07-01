@@ -25,7 +25,7 @@ pipeline {
                 GIT_REPO = 'https://github.com/oznbgdemo/demo-db'
             }
             steps {
-                checkout scm
+               // checkout scm
                 sh 'uname -a'
                 sh 'echo "in BUILD"'
             }
