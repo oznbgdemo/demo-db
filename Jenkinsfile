@@ -16,9 +16,6 @@ pipeline {
         IBM_CLOUD_DEVOPS_TOOLCHAIN_ID = '1320cec1-daaa-4b63-bf06-7001364865d2'
         IBM_CLOUD_DEVOPS_WEBHOOK_URL = 'WEBHOOK_URL_PLACEHOLDER'
     }
-    tools {
-        nodejs 'recent'
-    }
     stages {
         stage('Build') {
             environment {
@@ -29,7 +26,7 @@ pipeline {
             }
             steps {
                 checkout scm
-                sh 'npm --version'
+                sh 'uname -a'
                 sh 'echo "in BUILD"'
             }
             // post build section to use "publishBuildRecord" method to publish build record
@@ -39,18 +36,6 @@ pipeline {
                 }
                 failure {
                     publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"FAIL"
-                }
-            }
-        }
-        stage('Unit Test and Code Coverage') {
-            steps {
-                sh 'grunt dev-test-cov --no-color -f'
-            }
-            // post build section to use "publishTestResult" method to publish test result
-            post {
-                always {
-                    publishTestResult type:'unittest', fileLocation: './mochatest.json'
-                    publishTestResult type:'code', fileLocation: './tests/coverage/reports/coverage-summary.json'
                 }
             }
         }
@@ -77,21 +62,7 @@ pipeline {
                 }
             }
         }
-        stage('FVT') {
-            //set the APP_URL as the environment variable for the fvt
-            environment {
-                APP_URL = "http://staging-${IBM_CLOUD_DEVOPS_APP_NAME}.mybluemix.net"
-            }
-            steps {
-                sh 'grunt fvt-test --no-color -f'
-            }
-            // post build section to use "publishTestResult" method to publish test result
-            post {
-                always {
-                    publishTestResult type:'fvt', fileLocation: './mochafvt.json', environment: 'STAGING'
-                }
-            }
-        }
+
         stage('Gate') {
             steps {
                 // use "evaluateGate" method to leverage IBM Cloud DevOps gate
