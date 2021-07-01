@@ -1,6 +1,7 @@
 node {
     //VELOCITY_APP_NAME must match your Velocity pipeline application name
     def GITHUB_REPO_URL="https://github.com/oznbgdemo/demo-db"
+    def GITHUB_REPO="https://github.com/oznbgdemo/demo-db"
     def GITHUB_BRANCH="main"    
     def VELOCITY_APP_NAME="GIT-DB"
     def GIT_COMMIT
@@ -28,6 +29,19 @@ node {
                versionName:"${currentBuild.displayName}",
                requestor: "admin", id: "${currentBuild.displayName}"
             )
+    }
+    stage('Build2') {
+	    steps {
+		    sh 'do something in Build2'
+	    }
+	    post {
+                success {
+                    publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"SUCCESS"
+                }
+                failure {
+                    publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"FAIL"
+                }
+            }
     }
     stage('Test') {
             echo 'Testing..'
