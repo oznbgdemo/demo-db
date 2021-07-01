@@ -2,7 +2,12 @@ node {
     //VELOCITY_APP_NAME must match your Velocity pipeline application name
     def VELOCITY_APP_NAME="GIT-DB"
     def GIT_COMMIT
-
+    def VELOCITY_ENV_ID_INPUT="64fa7beb-4deb-4177-84a0-c018a32bff8e"
+    def VELOCITY_ENV_ID_DEV="def86393-cbbf-40b2-a97a-fb08c7cf64b5"
+    def VELOCITY_ENV_ID_QA="97002b7a-9de3-4c05-a233-a13669e16438"
+    def VELOCITY_ENV_ID_PROD="e4a162e6-badb-4cf3-8600-268e388b653e"
+    def VERSION_NUMBER="1.0"    
+    
     stage('Build') {
             sh 'echo "Hello World"'
             sh 'echo "MAJOR.MINOR.BUILD: " $MAJOR_VERSION"."$MINOR_VERSION"."$BUILD_NUMBER '
@@ -12,6 +17,7 @@ node {
             '''
             GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             echo "GIT_COMMIT=${GIT_COMMIT}"
+            VERSION_NUMBER = $MAJOR_VERSION"."$MINOR_VERSION
     }
     stage('Test') {
             echo 'Testing..'
