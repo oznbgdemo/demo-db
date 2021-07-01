@@ -8,14 +8,6 @@
  */
 pipeline {
     agent any
-    environment {
-        // You need to specify 4 required environment variables first, they are going to be used for the following IBM Cloud DevOps steps
-        IBM_CLOUD_DEVOPS_CREDS = credentials('BM_CRED')
-        IBM_CLOUD_DEVOPS_ORG = 'dlatest'
-        IBM_CLOUD_DEVOPS_APP_NAME = 'Weather-V1'
-        IBM_CLOUD_DEVOPS_TOOLCHAIN_ID = '1320cec1-daaa-4b63-bf06-7001364865d2'
-        IBM_CLOUD_DEVOPS_WEBHOOK_URL = 'WEBHOOK_URL_PLACEHOLDER'
-    }
     stages {
         stage('Build') {
             environment {
@@ -50,13 +42,13 @@ pipeline {
             // post build section to use "publishDeployRecord" method to publish deploy record and notify OTC of stage status
             post {
                 success {
-                    publishDeployRecord environment: "DEV", appUrl: "http://staging-${IBM_CLOUD_DEVOPS_APP_NAME}.mybluemix.net", result:"SUCCESS"
+                    publishDeployRecord environment: "DEV", appUrl: "http://asdf.com", result:"SUCCESS"
                     // use "notifyOTC" method to notify otc of stage status
                     notifyOTC stageName: "Deploy to Staging", status: "SUCCESS"
                     sendDeployableMessage status: "SUCCESS"
                 }
                 failure {
-                    publishDeployRecord environment: "STAGING", appUrl: "http://staging-${IBM_CLOUD_DEVOPS_APP_NAME}.mybluemix.net", result:"FAIL"
+                    publishDeployRecord environment: "STAGING", appUrl: "http://asdf.com", result:"FAIL"
                     // use "notifyOTC" method to notify otc of stage status
                     notifyOTC stageName: "Deploy to Staging", status: "FAILURE"
                 }
@@ -80,13 +72,13 @@ pipeline {
             // post build section to use "publishDeployRecord" method to publish deploy record and notify OTC of stage status
             post {
                 success {
-                    publishDeployRecord environment: "PROD", appUrl: "http://prod-${IBM_CLOUD_DEVOPS_APP_NAME}.mybluemix.net", result:"SUCCESS"
+                    publishDeployRecord environment: "PROD", appUrl: "http://asdf.com", result:"SUCCESS"
                     // use "notifyOTC" method to notify otc of stage status
                     notifyOTC stageName: "Deploy to Prod", status: "SUCCESS"
                     sendDeployableMessage status: "SUCCESS"
                 }
                 failure {
-                    publishDeployRecord environment: "PROD", appUrl: "http://prod-${IBM_CLOUD_DEVOPS_APP_NAME}.mybluemix.net", result:"FAIL"
+                    publishDeployRecord environment: "PROD", appUrl: "http://asdf.com", result:"FAIL"
                     // use "notifyOTC" method to notify otc of stage status
                     notifyOTC stageName: "Deploy to Prod", status: "FAILURE"
                 }
