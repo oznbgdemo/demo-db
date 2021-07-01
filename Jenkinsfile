@@ -1,8 +1,9 @@
 node {
     //VELOCITY_APP_NAME must match your Velocity pipeline application name
     def GITHUB_REPO_URL="https://github.com/oznbgdemo/demo-db"
-    def GITHUB_REPO="https://github.com/oznbgdemo/demo-db"
+    def GIT_REPO="https://github.com/oznbgdemo/demo-db"
     def GITHUB_BRANCH="main"    
+    def GIT_BRANCH="main"    
     def VELOCITY_APP_NAME="GIT-DB"
     def GIT_COMMIT
     def VELOCITY_ENV_ID_INPUT="64fa7beb-4deb-4177-84a0-c018a32bff8e"
