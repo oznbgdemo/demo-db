@@ -17,7 +17,7 @@ node {
             '''
             GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             echo "GIT_COMMIT=${GIT_COMMIT}"
-            VERSION_NUMBER = $MAJOR_VERSION"."$MINOR_VERSION
+
     }
     stage('Test') {
             echo 'Testing..'
