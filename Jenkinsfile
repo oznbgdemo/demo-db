@@ -1,6 +1,6 @@
 node {
     //VELOCITY_APP_NAME must match your Velocity pipeline application name
-    def VELOCITY_APP_NAME="DB"
+    def VELOCITY_APP_NAME="GIT-DB"
     def GIT_COMMIT
 
     stage('Build') {
