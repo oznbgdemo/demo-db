@@ -38,7 +38,7 @@ node {
              tenantId: "5ade13625558f2c6688d15ce",
              revision: "${GIT_COMMIT}",
              appName: "${VELOCITY_APP_NAME}",
-	      appID: "${VELOCITY_APP_ID}",
+	      appId: "${VELOCITY_APP_ID}",
              versionName:"${currentBuild.displayName}",
 	     status:"success",
 	     debug:"true",
