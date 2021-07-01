@@ -32,14 +32,7 @@ node {
     }
     stage('Build2') {
 	    sh 'echo "Do Something"'
-	    post {
-                success {
-                    publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"SUCCESS"
-                }
-                failure {
-                    publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"FAIL"
-                }
-            }
+            publishBuildRecord gitBranch: "${GIT_BRANCH}", gitCommit: "${GIT_COMMIT}", gitRepo: "${GIT_REPO}", result:"SUCCESS"
     }
     stage('Test') {
             echo 'Testing..'
