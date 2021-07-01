@@ -1,5 +1,7 @@
 node {
     //VELOCITY_APP_NAME must match your Velocity pipeline application name
+    def GITHUB_REPO_URL="https://github.com/oznbgdemo/demo-db"
+    def GITHUB_BRANCH="main"    
     def VELOCITY_APP_NAME="GIT-DB"
     def GIT_COMMIT
     def VELOCITY_ENV_ID_INPUT="64fa7beb-4deb-4177-84a0-c018a32bff8e"
@@ -17,11 +19,34 @@ node {
             '''
             GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             echo "GIT_COMMIT=${GIT_COMMIT}"
-
+            currentBuild.displayName = "${MAJOR_VERSION}.${MINOR_VERSION}.${BUILD_NUMBER}"
+            echo "Building ${VELOCITY_APP_NAME} (Build:${currentBuild.displayName}, GIT_COMMIT:${GIT_COMMIT})"
+            step($class: 'UploadBuild', 
+               tenantId: "5ade13625558f2c6688d15ce",
+               revision: "${GIT_COMMIT}",
+               appName: "${VELOCITY_APP_NAME}",
+               versionName:"${currentBuild.displayName}",
+               requestor: "admin", id: "${currentBuild.displayName}"
+            )
     }
     stage('Test') {
             echo 'Testing..'
     }
+   stage ("Deploy to DEV") {
+    sleep 10
+    step([$class: 'UploadDeployment',
+          tenantId: "5ade13625558f2c6688d15ce",
+          versionName: "${currentBuild.displayName}",
+          versionExtId: "${currentBuild.displayName}",
+          type: 'Jenkins',
+          environmentId: "${VELOCITY_ENV_ID_DEV}",
+          environmentName: 'DEV',
+          appName: "${VELOCITY_APP_NAME}",
+          description: '[Description ex: Terraform Deployment]',
+          initiator: "admin",
+		  result: 'true'
+      ])
+   }    
     stage('Send Metrics') {
         echo "Building ${VELOCITY_APP_NAME} (Build:${currentBuild.displayName}, GIT_COMMIT:${GIT_COMMIT})" 
         step($class: 'UploadBuild',
