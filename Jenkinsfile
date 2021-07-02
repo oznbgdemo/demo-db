@@ -10,8 +10,8 @@ node {
     def VELOCITY_ENV_ID_PROD="e4a162e6-badb-4cf3-8600-268e388b653e"
 	
     //VELOCITY_APP_NAME must match your Velocity pipeline application name
-    def VELOCITY_APP_NAME="GIT-DB"
-    def VELOCITY_APP_ID="3b4b20ca-d46a-4446-a212-8fab7a9c3974"
+    def VELOCITY_APP_NAME="DB"
+    def VELOCITY_APP_ID="e658c783-1d70-41bf-b0fe-e465a8114f48"
     //Version number 
     def VERSION_NUMBER="${MAJOR_VERSION}.${MINOR_VERSION}"
     //Do not change below this line.
