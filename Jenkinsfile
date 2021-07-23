@@ -41,7 +41,7 @@ node {
             appName: "${VELOCITY_APP_NAME}",
             versionName:"${currentBuild.displayName}",
             requestor: "admin", id: "${currentBuild.displayName}")
-	step([$class: 'UCDeployPublisher', component: [componentName: 'GIT-DB', componentTag: '', delivery: [$class: 'Push', baseDir: '${WORKSPACE}', fileExcludePatterns: '', fileIncludePatterns: '**/*', pushDescription: '', pushFailedBuild: false, pushIncremental: false, pushProperties: '', pushVersion: '${BUILD_NUMBER}']], siteName: 'UCD'])	    
+	step([$class: 'UCDeployPublisher', component: [componentName: 'GIT-DB', componentTag: '', delivery: [$class: 'Push', baseDir: '${WORKSPACE}', fileExcludePatterns: '', fileIncludePatterns: '**/*', pushDescription: '', pushFailedBuild: false, pushIncremental: false, pushProperties: '', pushVersion: '${currentBuild.displayName']], siteName: 'UCD'])	    
     }
 
 //     stage ("Deploy to DEV") {
